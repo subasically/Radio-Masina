@@ -1,0 +1,44 @@
+<!-- <icecast>
+  <limits>
+    <clients>100</clients>
+    <sources>2</sources>
+  </limits>
+
+  <authentication>
+    <admin>
+      <username>admin</username>
+      <password>hackme</password>
+    </admin>
+    <source>
+      <username>source</username>
+      <password>hackme</password>
+    </source>
+  </authentication>
+
+  <hostname>localhost</hostname>
+  <listen-socket>
+    <port>8000</port>
+  </listen-socket>
+
+  <fileserve>1</fileserve>
+
+  <paths>
+    <basedir>/usr/local/share/icecast</basedir>
+    <logdir>/usr/local/var/log/icecast</logdir>
+    <webroot>/usr/local/share/icecast/web</webroot>
+    <adminroot>/usr/local/share/icecast/admin</adminroot>
+    <pidfile>/usr/local/var/run/icecast.pid</pidfile>
+  </paths>
+
+  <logging>
+    <accesslog>access.log</accesslog>
+    <errorlog>error.log</errorlog>
+    <loglevel>3</loglevel>
+    <logsize>10000</logsize>
+  </logging>
+
+  <mount>
+    <mount-name>/example.ogg</mount-name>
+    <file>/usr/local/share/icecast/web/example.ogg</file>
+  </mount>
+</icecast> -->
