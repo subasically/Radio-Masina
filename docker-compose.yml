@@ -1,26 +1,10 @@
-services:
-  icecast:
-    image: moul/icecast
-    container_name: icecast
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./icecast.xml:/etc/icecast.xml
-    environment:
-      - ICECAST_SOURCE_PASSWORD=hackme
-      - ICECAST_RELAY_PASSWORD=hackme
-      - ICECAST_ADMIN=admin@localhost
-      - ICECAST_ADMIN_PASSWORD=hackme
-      - ICECAST_PASSWORD=hackme
-      - ICECAST_LOCATION=Basement
-      # - ICECAST_HOSTNAME=radio.subasically.me
+version: '3.8'
 
-  liquidsoap:
-    image: savonet/liquidsoap:v2.3.0-rc1
-    # image: savonet/liquidsoap:rolling-release-v2.3.x
-    container_name: liquidsoap
-    volumes:
-      - ./liquidsoap/main.liq:/script/main.liq
-      - ./liquidsoap/config.liq:/script/config.liq
-      - ./music:/music
-    command: liquidsoap /script/main.liq
+services:
+  airadiodj:
+    build: .
+    ports:
+      - "8005:8005"
+    env_file:
+      - .env
+    command: python ai_dj_streamer.py

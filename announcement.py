@@ -2,7 +2,8 @@ import requests
 import os
 import json
 
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+AZURACAST_API_URL = os.getenv("AZURACAST_API_URL")
 
 
 # Function to generate announcement text using OpenAI Chat API
@@ -59,9 +60,6 @@ def generate_tts(text, voice="alloy"):
     else:
         print(f"Error from TTS API: {response.status_code} - {response.text}")
         return None
-
-
-AZURACAST_API_URL = "http://basic-radio.subasically.me/api/nowplaying/1"
 
 
 def get_current_track():
