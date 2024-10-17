@@ -1,1 +1,6 @@
+requests
 pyshout
+pytz
+python-dotenv
+mutagen
+openai
