@@ -35,7 +35,7 @@ services:
       - /music:/music
       - /mnt/storage/data/appdata/radio_masina:/appdata
     environment:
-      - OPENAI_API_KEY=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
+      - OPENAI_API_KEY=
       - OPENAI_CHAT_API_URL=https://api.openai.com/v1/chat/completions
       - OPENAI_TTS_API_URL=https://api.openai.com/v1/audio/speech
       - OPENAI_VOICE=nova
