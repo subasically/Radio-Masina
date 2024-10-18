@@ -1,6 +1,4 @@
 requests
-pyshout
-pytz
-python-dotenv
+pydub
 mutagen
 openai
