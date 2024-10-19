@@ -17,8 +17,8 @@ OPENAI_VOICE = os.getenv("OPENAI_VOICE", "nova")
 ICECAST_HOST = os.getenv("ICECAST_HOST", "10.10.10.5")
 ICECAST_PORT = int(os.getenv("ICECAST_PORT", 8000))
 ICECAST_USER = os.getenv("ICECAST_USER", "AI_RADIO_MASINA")
-ICECAST_PASSWORD = os.getenv("ICECAST_PASSWORD", "Fildo198&")
-ICECAST_MOUNT = os.getenv("ICECAST_MOUNT", "/")
+ICECAST_PASSWORD = os.getenv("ICECAST_PASSWORD", "hackme")
+ICECAST_MOUNT = os.getenv("ICECAST_MOUNT", "radio")
 ICECAST_FORMAT = os.getenv("ICECAST_FORMAT", "mp3")
 ICECAST_BITRATE = int(os.getenv("ICECAST_BITRATE", 192))
 ICECAST_SAMPLERATE = int(os.getenv("ICECAST_SAMPLERATE", 44100))
@@ -27,8 +27,9 @@ LIQUIDSOAP_HOST = os.getenv("LIQUIDSOAP_HOST", "localhost")
 LIQUIDSOAP_PORT = int(os.getenv("LIQUIDSOAP_PORT", 7001))
 MUSIC_DIR = os.getenv(
     "MUSIC_DIR",
-    "",
+    "./music",
 )
+CHIME_PATH = os.getenv("CHIMES_DIR", "./chime.mp3")
 INTRO_SONG_PATH = os.getenv("INTRO_SONG_PATH", "./intro_song.mp3")
 DJ_NAME = os.getenv("DJ_NAME", "DJ Mašina")
 DJ_GENDER = os.getenv("DJ_GENDER", "Female")

@@ -1,24 +1,24 @@
 services:
   icecast:
     image: moul/icecast
-    container_name: icecast
+    container_name: radio_masina_icecast
     restart: always
     ports:
-      - 8010:8000
+      - 8016:8000
     environment:
-      - ICECAST_SOURCE_PASSWORD=Uc$*$2DkRKN1q12#acWq&HvfbKU#FV
-      - ICECAST_ADMIN_PASSWORD=Uc$*$2DkRKN1q12#acWq&HvfbKU#FV
-      - ICECAST_PASSWORD=Uc$*$2DkRKN1q12#acWq&HvfbKU#FV
-      - ICECAST_RELAY_PASSWORD=Uc$*$2DkRKN1q12#acWq&HvfbKU#FV
+      - ICECAST_SOURCE_PASSWORD=hackme
+      - ICECAST_ADMIN_PASSWORD=hackme
+      - ICECAST_PASSWORD=hackme
+      - ICECAST_RELAY_PASSWORD=hackme
 
   liquidsoap:
     image: savonet/liquidsoap:rolling-release-v2.2.x
-    container_name: liquidsoap
+    container_name: radio_masina_liquidsoap
     restart: always
     command: ["/radio.liq"]
     user: "1000:1000"
     ports:
-      - 7001:7001
+      - 7002:7001
     depends_on:
       - icecast
     volumes:
@@ -43,12 +43,15 @@ services:
       - ICECAST_HOST=icecast
       - ICECAST_PORT=8000
       - ICECAST_USER=AI_RADIO_MASINA
-      - ICECAST_PASSWORD=Uc$*$2DkRKN1q12#acWq&HvfbKU#FV
-      - ICECAST_MOUNT=/radio
+      - ICECAST_PASSWORD=hackme
+      - ICECAST_MOUNT=radio # No leading slash
+      - LIQUIDSOAP_HOST=liquidsoap
+      - LIQUIDSOAP_PORT=7002
       - RADIO_NAME=Basic Radio
       - DJ_NAME=DJ Mašina
-      - MUSIC_DIR=
-      - INTRO_SONG_PATH=/intros/intro_song.mp3
+      - MUSIC_DIR=/mnt/storage/data/media/music/Radio
+      - CHIME_PATH=/mnt/storage/data/media/music/Radio/Chimes/chime.mp3
+      - INTRO_SONG_PATH=/mnt/storage/data/media/music/Radio/Intros/intro_song.mp3
       - DJ_DEMEANOR=Fun and Energetic
       - DJ_GENDER=Female
       - DJ_LANGUAGE=Bosnian

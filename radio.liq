@@ -3,8 +3,11 @@
 #%include "utils.liq"
 
 # Environment Variables
-icecast_password = environment.get("ICECAST_PASSWORD")
-icecast_host = environment.get("ICECAST_HOST")
+ICECAST_PASSWORD = environment.get("ICECAST_PASSWORD")
+ICECAST_HOST = environment.get("ICECAST_HOST")
+ICECAST_MOUNT = environment.get("ICECAST_MOUNT")
+CHIME_PATH = environment.get("CHIME_PATH")
+MUSIC_DIR = environment.get("MUSIC_DIR")
 
 # Configure logging
 log.file.path := "/tmp/my_radio.log"
@@ -15,10 +18,10 @@ settings.server.telnet := true
 settings.harbor.bind_addrs := ["0.0.0.0"]
 
 # Define the default playlist
-default = mksafe(normalize(playlist(mode='randomize', reload=1, reload_mode="rounds", "/music/Balkan/Narodna")))
+default = mksafe(normalize(playlist(mode='randomize', reload=1, reload_mode="rounds", MUSIC_DIR)))
 
 # Define the clock sound
-clock = single("~/music/Balkan/Chimes/hour_chime_1.mp3")
+clock = single(CHIME_PATH)
 
 # Create a request queue for song requests
 songRequests = request.queue()
@@ -31,11 +34,11 @@ radio = add([radio, switch([({0m0s}, clock)])])
 
 # Output the full stream in OGG and MP3
 output.icecast(%mp3,
-  host=icecast_host, port=8000, password=icecast_password,
-  mount="radio.mp3", radio)
+  host=ICECAST_HOST, port=8000, password=ICECAST_PASSWORD,
+  mount="#{ICECAST_MOUNT}.mp3", radio)
 output.icecast(%vorbis,
-  host=icecast_host, port=8000, password=icecast_password,
-  mount="radio.ogg", radio)
+  host=ICECAST_HOST, port=8000, password=ICECAST_PASSWORD,
+  mount="#{ICECAST_MOUNT}.ogg", radio)
 
 # HTTP request handler to play songs
 def playRequest(req, res) =
