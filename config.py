@@ -14,7 +14,7 @@ OPENAI_TTS_API_URL = os.getenv(
     "OPENAI_TTS_API_URL", "https://api.openai.com/v1/audio/speech"
 )
 OPENAI_VOICE = os.getenv("OPENAI_VOICE", "nova")
-ICECAST_HOST = os.getenv("ICECAST_HOST", "10.10.10.5")
+ICECAST_HOST = os.getenv("ICECAST_HOST", "icecast")
 ICECAST_PORT = int(os.getenv("ICECAST_PORT", 8000))
 ICECAST_USER = os.getenv("ICECAST_USER", "AI_RADIO_MASINA")
 ICECAST_PASSWORD = os.getenv("ICECAST_PASSWORD", "hackme")
