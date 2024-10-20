@@ -1,0 +1,14 @@
+# Use the official Alpine image as a base image
+FROM alpine:latest
+
+# Install inotify-tools
+RUN apk add --no-cache inotify-tools
+
+# Copy the watch.sh script into the container
+COPY watch.sh /watch.sh
+
+# Make the script executable
+RUN chmod +x /watch.sh
+
+# Run the watch.sh script
+CMD ["/watch.sh"]

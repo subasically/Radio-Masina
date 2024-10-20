@@ -8,19 +8,19 @@ from logger import log
 
 def index_music_directory():
     """Index the music directory and return a list of available songs."""
-    log(f"Indexing music directory: {MUSIC_DIR}")
+    log(f"Indexing music directory: {MUSIC_DIR}", "music_manager")
     songs = []
     for root, _, files in os.walk(MUSIC_DIR):
         for file in files:
             if file.endswith(AUDIO_EXTENSIONS):  # Check for supported audio formats
                 songs.append(os.path.join(root, file))
-    log(f"Indexed {len(songs)} songs.")
+    log(f"Indexed {len(songs)} songs.", "music_manager")
     return songs
 
 
 def get_song_metadata(song_path):
     """Extract metadata from a song file."""
-    log(f"Extracting metadata from: {song_path}")
+    log(f"Extracting metadata from: {song_path}", "music_manager")
     extension = os.path.splitext(song_path)[1].lower()
 
     if extension == ".mp4" or extension == ".m4a":
@@ -34,7 +34,7 @@ def get_song_metadata(song_path):
             }
             return metadata
         else:
-            log(f"Error reading metadata from {song_path}")
+            log(f"Error reading metadata from {song_path}", "music_manager")
             return None
 
     elif extension == ".mp3":
@@ -48,11 +48,11 @@ def get_song_metadata(song_path):
             }
             return metadata
         except Exception as e:
-            log(f"Error reading metadata from {song_path}: {e}")
+            log(f"Error reading metadata from {song_path}: {e}", "music_manager")
             return None
 
     else:
-        log(f"Unsupported file format: {song_path}")
+        log(f"Unsupported file format: {song_path}", "music_manager")
         return None
 
 
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     # Get metadata for the first song in the list
     if songs:
         random_song = songs[random.randint(0, len(songs) - 1)]
-        fixed_song = "./music/Mirko Plavsic - Manastir.m4a"
+        fixed_song = "./music/Aleksandra Prijović - Duguješ Mi Dva Života 2.m4a"
         song = fixed_song
         metadata = get_song_metadata(song)
         if metadata:

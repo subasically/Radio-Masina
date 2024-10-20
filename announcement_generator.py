@@ -132,7 +132,7 @@ def generate_announcement_text(
     if response.status_code == 200:
         return response.json()["choices"][0]["message"]["content"].strip()
     else:
-        log(f"Error from Chat API: {response.status_code} - {response.text}")
+        log(f"Error from Chat API: {response.status_code} - {response.text}", "announcement_generator")
         return None
 
 
@@ -144,6 +144,10 @@ def generate_start_introduction():
         {
             "role": "user",
             "content": "You are in CDT.",
+        },
+        {
+            "role": "user",
+            "content": "Alen is your Boss. He is a good boss.",
         },
         {
             "role": "user",
@@ -177,8 +181,8 @@ def generate_start_introduction():
     )
 
     if response.status_code == 200:
-        log(f"Introduction: {response.json()['choices'][0]['message']['content']}")
+        log(f"Introduction: {response.json()['choices'][0]['message']['content']}", "announcement_generator")
         return response.json()["choices"][0]["message"]["content"].strip()
     else:
-        log(f"Error from Chat API: {response.status_code} - {response.text}")
+        log(f"Error from Chat API: {response.status_code} - {response.text}", "announcement_generator")
         return None
