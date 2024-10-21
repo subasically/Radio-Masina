@@ -1,5 +1,7 @@
 __pycache__/*
 /music/*
+/intros/*
+/jingles/*
 venv/*
 *.wav
 *.mp3

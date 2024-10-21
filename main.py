@@ -5,11 +5,12 @@ from announcement_generator import (
     generate_announcement_text,
 )
 from tts_generator import generate_tts_audio
-from config import INTROS_DIR
+from config import INTROS_DIR, JINGLES_DIR
 from logger import log
 from liquidsoap_client import LiquidsoapClient
 from pathlib import Path
 from pydub import AudioSegment
+from normalize_jingles import normalize_jingles
 
 intro_queued = False  # Initialize the flag
 
@@ -73,6 +74,7 @@ def queue_songs_and_intros(client, songs, start_index=0, batch_size=1):
                     metadata["title"],
                     metadata["artist"],
                 )
+                log(f"Announcement: {announcement_text}", "main")
                 tts_path = generate_tts_audio(announcement_text, filename="announcement.mp3")
                 if tts_path:
                     client.queue_song(tts_path, "Announcement - DJ Mašina", queue="intro")
@@ -83,6 +85,10 @@ def queue_songs_and_intros(client, songs, start_index=0, batch_size=1):
 
 def main():
     """Main function to run the AI DJ streaming service."""
+    log("Starting the AI DJ streaming service...", "main")
+    
+    # Normalize the jingles
+    normalize_jingles(JINGLES_DIR)
     
     # Generate and play the introduction
     intro_text = generate_start_introduction()
@@ -109,6 +115,9 @@ def main():
             queue_songs_and_intros(client, songs, start_index=start_index, batch_size=batch_size)
             start_index += batch_size
 
+    log("AI DJ streaming service started successfully.", "main")
+
 if __name__ == "__main__":
-    log("Starting the AI DJ streaming service...", "main")
-    # main()
+    log("Initializing the AI DJ streaming service...", "main")
+    main()
+    log("AI DJ streaming service initialization complete.", "main")

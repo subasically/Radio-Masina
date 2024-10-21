@@ -6,10 +6,10 @@ services:
     ports:
       - 8000:8000
     environment:
-      - ICECAST_SOURCE_PASSWORD=changeme
-      - ICECAST_ADMIN_PASSWORD=changeme
-      - ICECAST_PASSWORD=changeme
-      - ICECAST_RELAY_PASSWORD=changeme
+      - ICECAST_SOURCE_PASSWORD=hackme
+      - ICECAST_ADMIN_PASSWORD=hackme
+      - ICECAST_PASSWORD=hackme
+      - ICECAST_RELAY_PASSWORD=hackme
 
   liquidsoap:
     image: savonet/liquidsoap:rolling-release-v2.2.x
@@ -20,7 +20,7 @@ services:
     ports:
       - 7001:7001
     environment:
-      - ICECAST_PASSWORD=changeme
+      - ICECAST_PASSWORD=hackme
       - ICECAST_HOST=icecast
     depends_on:
       - icecast
@@ -46,7 +46,7 @@ services:
       - ICECAST_HOST=icecast
       - ICECAST_PORT=8000
       - ICECAST_USER=AI_RADIO_MASINA
-      - ICECAST_PASSWORD=changeme
+      - ICECAST_PASSWORD=hackme
       - ICECAST_MOUNT=radio # No leading slash
       - LIQUIDSOAP_HOST=liquidsoap
       - LIQUIDSOAP_PORT=7001
