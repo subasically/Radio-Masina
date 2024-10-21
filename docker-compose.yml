@@ -1,39 +1,48 @@
 services:
   icecast:
     image: moul/icecast
-    container_name: icecast
+    container_name: radio_masina_icecast
     ports:
-      - 8010:8000
+      - 8000:8000
     environment:
-      - ICECAST_SOURCE_PASSWORD=Uc$*$2DkRKN1q12#acWq&HvfbKU#FV
-      - ICECAST_ADMIN_PASSWORD=Uc$*$2DkRKN1q12#acWq&HvfbKU#FV
-      - ICECAST_PASSWORD=Uc$*$2DkRKN1q12#acWq&HvfbKU#FV
-      - ICECAST_RELAY_PASSWORD=Uc$*$2DkRKN1q12#acWq&HvfbKU#FV
+      - ICECAST_SOURCE_PASSWORD=changeme
+      - ICECAST_ADMIN_PASSWORD=changeme
+      - ICECAST_PASSWORD=changeme
+      - ICECAST_RELAY_PASSWORD=changeme
+    networks:
+      - basic-network
 
   liquidsoap:
-    image: savonet/liquidsoap:rolling-release-v2.2.x
-    container_name: liquidsoap
+    image: savonet/liquidsoap:v2.2.5 #savonet/liquidsoap:rolling-release-v2.3.x 
+    container_name: radio_masina_liquidsoap
     restart: always
     command: ["/radio.liq"]
     user: "1000:1000"
     ports:
       - 7001:7001
+    environment:
+      - ICECAST_PASSWORD=changeme
+      - ICECAST_HOST=icecast
     depends_on:
       - icecast
     volumes:
-      - /music:/music
-      - /home/subasically/appdata/radio_masina/radio.liq:/radio.liq
+      - ./music:/music
+      - ./radio.liq:/radio.liq
+      - ./jingles:/jingles
+      - ./intros:/intros
+    networks:
+      - basic-network
 
-  radio_masina:
+  radio_masina_app:
     build: .
-    container_name: radio_masina
+    container_name: radio_masina_app
     restart: always
     depends_on:
-      - icecast
       - liquidsoap
     volumes:
-      - /music:/music
-      - /mnt/storage/data/appdata/radio_masina:/appdata
+      - ./music:/music
+      - ./jingles:/jingles
+      - ./intros:/intros
     environment:
       - OPENAI_API_KEY=
       - OPENAI_CHAT_API_URL=https://api.openai.com/v1/chat/completions
@@ -41,19 +50,36 @@ services:
       - OPENAI_VOICE=nova
       - ICECAST_HOST=icecast
       - ICECAST_PORT=8000
-      - ICECAST_USER=AI_RADIO_MASINA
-      - ICECAST_PASSWORD=Uc$*$2DkRKN1q12#acWq&HvfbKU#FV
-      - ICECAST_MOUNT=/radio
+      - ICECAST_USER=admin
+      - ICECAST_PASSWORD=changeme
+      - ICECAST_MOUNT=radio
+      - LIQUIDSOAP_HOST=liquidsoap
+      - LIQUIDSOAP_PORT=7001
       - RADIO_NAME=Basic Radio
       - DJ_NAME=DJ Mašina
-      - MUSIC_DIR=/Volumes/data/media/music/Radio/Balkan/Narodna/
-      - INTRO_SONG_PATH=/intros/intro_song.mp3
+      - MUSIC_DIR=/music
+      - JINGLES_DIR=/jingles
+      - INTROS_DIR=/intros
       - DJ_DEMEANOR=Fun and Energetic
       - DJ_GENDER=Female
       - DJ_LANGUAGE=Bosnian
     networks:
       - basic-network
 
+  # file_watcher:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.file_watcher
+  #   container_name: radio_masina_file_watcher
+  #   restart: always
+  #   volumes:
+  #     - ./radio.liq:/radio.liq
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   depends_on:
+  #     - liquidsoap
+  #   networks:
+  #     - basic-network
+
 networks:
   basic-network:
-    external: true
+    driver: bridge

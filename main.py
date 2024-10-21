@@ -54,6 +54,7 @@ def play_intro_with_fade(intro_text, INTROS_DIR):
 
 def create_playlist():
     """Create a playlist from the indexed songs in the music directory."""
+    log("Creating a new playlist.", "main")
     songs = index_music_directory()
     random.shuffle(songs)
     return songs
@@ -82,7 +83,6 @@ def queue_songs_and_intros(client, songs, start_index=0, batch_size=1):
 
 def main():
     """Main function to run the AI DJ streaming service."""
-    log("Creating a new playlist.", "main")
     
     # Generate and play the introduction
     intro_text = generate_start_introduction()
@@ -110,4 +110,5 @@ def main():
             start_index += batch_size
 
 if __name__ == "__main__":
-    main()
+    log("Starting the AI DJ streaming service...", "main")
+    # main()

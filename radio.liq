@@ -6,20 +6,22 @@ icecast_host = environment.get("ICECAST_HOST")
 
 # Configure logging
 log.file.path := "/tmp/my_radio.log"
-log.stdout := true
+log.stdout := false
 
 # Enable telnet and harbor servers
 settings.server.telnet := true
 settings.harbor.bind_addrs := ["0.0.0.0"]
 
-# Define the default playlist
-default = mksafe(normalize(playlist(mode='randomize', reload=1, reload_mode="rounds", "/music")))
+# This function is called when a new metadata block is passed in the stream.
+def apply_metadata(m) =
+  title = m["title"]
+  artist = m["artist"]
+  print("Now playing: #{title} by #{artist}")
+end
 
-# Define the clock sound
-clock = single("~/jingles/izet_dosada.mp3")
-
-# Define jingle for song requests
-jingle = single("~/jingles/izet_fazlinovic_leave_me_in_pis.mp3")
+# Playlists
+songs = playlist(mode='randomize', reload=1, reload_mode="rounds", "/music")
+jingles = playlist(mode='randomize', reload=1, reload_mode="rounds", "/jingles")
 
 # Create a request queue for song requests
 songRequests = request.queue()
@@ -27,14 +29,12 @@ songRequests = request.queue()
 # Create a separate request queue for immediate play requests
 immediateRequests = request.queue()
 
-# Fallback to play requests if there are any; otherwise, play the default playlist
-radio = fallback([songRequests, default])
+radio = random(weights=[1, 3], [jingles, songs])
+security = single("/intros/intro_song.mp3")
+s = fallback(track_sensitive=false, [radio, security])
+s = smooth_add(normal=s, special=jingles)
 
-# Add the clock jingle to play at the beginning
-radio = add([radio, switch([({15m0s}, clock)])])
-
-# Add the jingle for a scheduled play every 15 minutes
-radio = add([radio, switch([({5m0s}, jingle)])])
+radio = source.on_metadata(radio, apply_metadata)
 
 # HTTP request handler to play songs (regular requests)
 def playRequest(req, res) =
@@ -91,9 +91,9 @@ harbor.http.register(port=7001, method="GET", "/immediate", playImmediate)
 # Output the full stream in OGG and MP3
 output.icecast(%mp3.vbr(bitrate=128, max_bitrate=256, id3v2=true),
   host=icecast_host, port=8000, password=icecast_password,
-  mount="radio.mp3", radio)
+  mount="radio.mp3", s)
 
 # Output as AAC
 output.icecast(%fdkaac,
   host=icecast_host, port=8000, password=icecast_password,
-  mount="radio.aac", radio)
+  mount="radio.aac", s)
