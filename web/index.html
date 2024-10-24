@@ -118,7 +118,7 @@
       <p id="now-playing-artist"></p>
     </div>
     <audio id="audio-player" controls>
-      <source src="http://radio_masina_icecast:8000/radio.ogg" type="audio/mpeg">
+      <source src="https://radio_masina_icecast:8000/radio.ogg" type="audio/mpeg">
       Your browser does not support the audio element.
     </audio>
     <p>Listeners: <span id="listeners">0</span></p>
@@ -135,7 +135,7 @@
     const listeners = document.getElementById('listeners');
 
     function getMetaData() {
-      fetch('http://radio_masina_app:5000/now_playing')
+      fetch('https://radio_masina_app:5000/now_playing')
         .then(response => response.json())
         .then(data => {
           nowPlayingTitle.textContent = data.title;
