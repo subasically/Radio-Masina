@@ -1,0 +1,19 @@
+services:
+  icecast:
+    image: moul/icecast
+    container_name: radio_masina_icecast
+    restart: on-failure
+    ports:
+      - 8000:8000
+    environment:
+      - TZ=America/Chicago
+      - ICECAST_SOURCE_PASSWORD=hackme
+      - ICECAST_ADMIN_PASSWORD=hackme
+      - ICECAST_PASSWORD=hackme
+      - ICECAST_RELAY_PASSWORD=hackme
+    networks:
+      - basic-network
+
+networks:
+  basic-network:
+    driver: bridge

@@ -1,4 +1,6 @@
 __pycache__/*
+node_modules/*
+web/static/*
 /music/*
 /intros/*
 /jingles/*
@@ -8,3 +10,7 @@ venv/*
 *.m4a
 .env.*
 .DS_Store
+ai_dj_intro.mp3
+combined_intro.mp3
+output_intro.mp3
+output_intro_example.mp3

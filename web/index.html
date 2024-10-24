@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radio Mašina</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* CSS HEX */
+      --nyanza: #e4fde1ff;
+      --bright-pink-crayola: #f45b69ff;
+      --gunmetal: #232c33ff;
+      --viridian: #4e937aff;
+      --medium-slate-blue: #7161efff;
+
+      /* CSS Gradient */
+      --gradient-radial: radial-gradient(circle, #e4fde1ff, #f45b69ff, #232c33ff, #4e937aff, #7161efff);
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      font-family: 'IBM Plex Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--nyanza);
+      height: 100vh;
+      color: var(--gunmetal);
+    }
+
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--gunmetal);
+      color: var(--nyanza);
+      padding: 1rem;
+      text-align: center;
+      height: 10vh;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      flex-grow: 1;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--gunmetal);
+      color: var(--nyanza);
+      text-align: center;
+      padding: 1rem;
+      height: 7vh;
+      box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    #now-playing-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: var(--bright-pink-crayola);
+      transition: color 0.3s;
+    }
+
+    #now-playing-artist {
+      font-size: 1.2rem;
+      color: var(--viridian);
+      transition: color 0.3s;
+    }
+
+    audio {
+      margin-top: 1rem;
+      border-radius: 5px;
+      padding: 0.5rem;
+      background-color: var(--nyanza);
+      transition: border-color 0.3s;
+    }
+
+    @media screen and (max-width: 480px) {
+      header {
+        height: 5vh;
+        font-size: 0.75rem;
+      }
+
+      #now-playing-title {
+        font-size: 1.2rem;
+      }
+
+      #now-playing-artist {
+        font-size: 1rem;
+      }
+
+      footer {
+        height: 5vh;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Radio Mašina</h1>
+  </header>
+  <main>
+    <div id="now-playing">
+      <p id="now-playing-title">Loading...</p>
+      <p id="now-playing-artist"></p>
+    </div>
+    <audio id="audio-player" controls>
+      <source src="http://localhost:8000/radio.ogg" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+    <p>Listeners: <span id="listeners">0</span></p>
+  </main>
+  <footer>
+    <p>&copy; <span id="year"></span> Radio Mašina. All rights reserved.</p>
+  </footer>
+  <script>
+    const year = new Date().getFullYear();
+    document.getElementById('year').textContent = year;
+
+    const nowPlayingTitle = document.getElementById('now-playing-title');
+    const nowPlayingArtist = document.getElementById('now-playing-artist');
+    const listeners = document.getElementById('listeners');
+
+    function getMetaData() {
+      fetch('http://localhost:5000/now_playing')
+        .then(response => response.json())
+        .then(data => {
+          nowPlayingTitle.textContent = data.title;
+          nowPlayingArtist.textContent = data.artist;
+          listeners.textContent = data.listeners;
+          setMediaSession(data);
+        })
+        .catch(error => console.error(error));
+    }
+
+    // Set browser navigator media session metadata
+    function setMediaSession(metadata) {
+      if ("mediaSession" in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: metadata.title,
+          artist: metadata.artist,
+          album: metadata.artist,
+          // artwork: [
+          //   { src: 'http://localhost:8000/radio.png', sizes: '96x96', type: 'image/png' },
+          //   { src: 'http://localhost:8000/radio.png', sizes: '128x128', type: 'image/png' },
+          //   { src: 'http://localhost:8000/radio.png', sizes: '192x192', type: 'image/png' },
+          //   { src: 'http://localhost:8000/radio.png', sizes: '256x256', type: 'image/png' },
+          //   { src: 'http://localhost:8000/radio.png', sizes: '384x384', type: 'image/png' },
+          //   { src: 'http://localhost:8000/radio.png', sizes: '512x512', type: 'image/png' },
+          // ]
+        });
+      }
+    }
+
+    getMetaData();
+
+    setInterval(() => {
+      getMetaData();
+    }, 5000);
+  </script>
+</body>
+
+</html>

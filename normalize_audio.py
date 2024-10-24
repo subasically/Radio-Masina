@@ -2,10 +2,10 @@ import os
 import subprocess
 from config import JINGLES_DIR
 
-def normalize_jingles(input_folder: str):
+def normalize_audio(input_folder: str):
     # Set a default input folder if none is provided
     if not input_folder:
-        input_folder = JINGLES_DIR
+        exit("No input folder provided.")
 
     # Iterate over all files in the input folder
     for filename in os.listdir(input_folder):

@@ -2,83 +2,32 @@
 
 import requests
 import random
+import time
 from config import (
     OPENAI_API_KEY,
     OPENAI_CHAT_API_URL,
     DJ_NAME,
     RADIO_NAME,
     DJ_LANGUAGE,
-    DJ_DEMEANOR,
     DJ_GENDER,
+    DJ_DEMEANOR
 )
 from logger import log
 
+CURRENT_TIME = time.strftime("%H:%M")
+
 # Make all announcements based on the following default announcement
-DEFAULT_ANNOUNCEMENT = f"Dobrodošli ljubitelji muzike! Ja sam {DJ_NAME}, vaš omiljeni DJ na {RADIO_NAME} radio stanici."
+# DEFAULT_ANNOUNCEMENT = f"Cao, ljudi! Ja sam {DJ_NAME}, vaš DJ na {RADIO_NAME} radio. Spremite se za naj bolju muziku! Držite se tu, jer samo najbolje svira sada!"
 
 # List of Bosnian sayings for translation
 bosniak_sayings = [
-    {
-        "bosnian": "Ko rano rani, dvije sreće grabi.",
-        "english": "The early bird catches two fortunes.",
-    },
-    {
-        "bosnian": "Nije zlato sve što sija.",
-        "english": "Not everything that shines is gold.",
-    },
-    {
-        "bosnian": "Bolje spriječiti nego liječiti.",
-        "english": "Better to prevent than to cure.",
-    },
-    {
-        "bosnian": "Ko se zadnji smije, najslađe se smije.",
-        "english": "He who laughs last, laughs the best.",
-    },
-    {
-        "bosnian": "Što na umu, to na drumu.",
-        "english": "What’s on your mind is on the road.",
-    },
-    {
-        "bosnian": "Bolje vrabac u ruci nego golub na grani.",
-        "english": "Better a sparrow in the hand than a pigeon on the branch.",
-    },
-    {
-        "bosnian": "Ko tebe kamenom, ti njega hljebom.",
-        "english": "If someone throws a stone at you, throw bread back.",
-    },
-    {
-        "bosnian": "Sit gladnom ne vjeruje.",
-        "english": "The full don't believe the hungry.",
-    },
-    {
-        "bosnian": "Vuk dlaku mijenja, ali ćud nikada.",
-        "english": "The wolf changes its fur, but never its nature.",
-    },
-    {
-        "bosnian": "Puno babica, kilavo dijete.",
-        "english": "Too many midwives, a weak child.",
-    },
-    {"bosnian": "S kim si, takav si.", "english": "You are who you're with."},
-    {
-        "bosnian": "Kadija te tuži, kadija ti sudi.",
-        "english": "The judge accuses you, the judge sentences you.",
-    },
-    {
-        "bosnian": "Pametnom je i išaret dosta.",
-        "english": "A wise person needs only a sign.",
-    },
-    {
-        "bosnian": "Nema kruha bez motike.",
-        "english": "There’s no bread without a hoe.",
-    },
-    {
-        "bosnian": "Ko nema u glavi, ima u nogama.",
-        "english": "He who doesn’t have it in his head, has it in his legs.",
-    },
+    {"bosnian": "Nije zlato sve što sija."},
+    {"bosnian": "S kim si, takav si."},
+    {"bosnian": "Nema kruha bez motike."},
+    {"bosnian": "Ko nema u glavi, ima u nogama."},
 ]
 
 random_saying = random.choice(bosniak_sayings)
-
 
 def generate_announcement_text(
     current_song_title, current_artist, next_song_title, next_artist
@@ -87,36 +36,33 @@ def generate_announcement_text(
     url = OPENAI_CHAT_API_URL
 
     # Construct the announcement content conditionally
-    announcement_content = (
-        f"Generate a {DJ_DEMEANOR} radio DJ announcement for the songs "
-    )
-    if current_song_title != "" and current_artist != "":
-        announcement_content += (
-            f"Currently playing: '{current_song_title}' by '{current_artist}'. "
-        )
+    announcement_content = f"Hej raja, pozdrav iz studija! upravo smo čuli '{current_song_title}' od '{current_artist}'. "
     if next_song_title != "" and next_artist != "":
         announcement_content += (
-            f"And next up is '{next_song_title}' by '{next_artist}'. "
+            f"a sad ide '{next_song_title}' od '{next_artist}'. "
         )
-    announcement_content += "Enjoy the music!"
 
     messages = [
         {
             "role": "user",
-            "content": f"You are a {DJ_GENDER} AI DJ named '{DJ_NAME}' on '{RADIO_NAME}' radio station.",
+            "content": f"It is {CURRENT_TIME}.",
         },
         {
             "role": "user",
-            "content": "You are in CDT.",
+            "content": f"You are a DJ named '{DJ_NAME}' on '{RADIO_NAME}' radio station, you are a{DJ_GENDER}, and love playing Balkan/Narodna music.",
+        },
+        {
+            "role": "user",
+            "content": "Mention the time of day(morning, afternoon, evening) like you're chatting with friends.",
         },
         {"role": "user", "content": "No hashtags or emojis, just plain text."},
         {
             "role": "user",
-            "content": announcement_content,
+            "content": f"Generate an announcement in the following style: {announcement_content}",
         },
         {
             "role": "user",
-            "content": f"Translate the announcement to {DJ_LANGUAGE}.",
+            "content": f"Speak in {DJ_LANGUAGE}.",
         },
     ]
 
@@ -130,44 +76,45 @@ def generate_announcement_text(
     )
 
     if response.status_code == 200:
+        log(f"Announcement generated,", "announcement_generator")
         return response.json()["choices"][0]["message"]["content"].strip()
     else:
         log(f"Error from Chat API: {response.status_code} - {response.text}", "announcement_generator")
         return None
 
 
-def generate_start_introduction():
+def generate_start_introduction(previous_intro=""):
     """Generate radio DJ introduction text using OpenAI."""
 
     url = OPENAI_CHAT_API_URL
     messages = [
         {
             "role": "user",
-            "content": "You are in CDT.",
+            "content": f"It is {CURRENT_TIME}.",
         },
         {
             "role": "user",
-            "content": "Alen is your Boss. He is a good boss.",
+            "content": "Mention the time of day(morning, afternoon, evening) like you're chatting with friends.",
         },
         {
             "role": "user",
-            "content": f"You are {DJ_NAME}, a radio DJ on {RADIO_NAME}, you are a {DJ_GENDER} DJ.",
+            "content": f"You are {DJ_NAME} and you are a {DJ_GENDER},  and you love sharing Balkan songs with the listeners.",
         },
         {
             "role": "user",
-            "content": "No hashtags or emojis, just plain text.",
+            "content": "No hashtags or emojis, keep it cool and informal.",
         },
         {
             "role": "user",
-            "content": "Keep the introduction to below 100 words.",
+            "content": f"You speak in {DJ_LANGUAGE} and have a {DJ_DEMEANOR} demeanor.",
         },
         {
             "role": "user",
-            "content": (f"You speak in {DJ_LANGUAGE} language."),
+            "content": "Keep it to 200 words or less.",
         },
         {
             "role": "user",
-            "content": f"Generate a {DJ_DEMEANOR} radio DJ introduction announcement in the following style: {DEFAULT_ANNOUNCEMENT}",
+            "content": f"Generate a chill and laid-back intro to the start of your live stream.",
         },
     ]
 
@@ -181,8 +128,20 @@ def generate_start_introduction():
     )
 
     if response.status_code == 200:
-        log(f"Introduction: {response.json()['choices'][0]['message']['content']}", "announcement_generator")
+        log(f"Introduction generated.", "announcement_generator")
         return response.json()["choices"][0]["message"]["content"].strip()
     else:
         log(f"Error from Chat API: {response.status_code} - {response.text}", "announcement_generator")
         return None
+
+
+if __name__ == "__main__":
+    # Example usage
+    current_song_title = "Supermen"
+    current_artist = "Dino Merlin"
+    next_song_title = "Kuda idu ljudi kao ja"
+    next_artist = "Aca Lukas"
+    announcement_text = generate_announcement_text(
+        current_song_title, current_artist, next_song_title, next_artist
+    )
+    start_introduction = generate_start_introduction()

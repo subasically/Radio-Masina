@@ -6,6 +6,7 @@ services:
     ports:
       - 8000:8000
     environment:
+      - TZ=America/Chicago
       - ICECAST_SOURCE_PASSWORD=hackme
       - ICECAST_ADMIN_PASSWORD=hackme
       - ICECAST_PASSWORD=hackme
@@ -22,6 +23,7 @@ services:
     ports:
       - 7001:7001
     environment:
+      - TZ=America/Chicago
       - ICECAST_PASSWORD=hackme
       - ICECAST_HOST=icecast
       - ICECAST_PORT=8000
@@ -37,17 +39,19 @@ services:
     networks:
       - basic-network
 
-  radio_masina_app:
+  radio_masina:
     build: .
     container_name: radio_masina_app
     restart: on-failure
-    depends_on:
-      - liquidsoap
     volumes:
       - ./music:/music
       - ./jingles:/jingles
       - ./intros:/intros
+      - ./web:/app/web
+    ports:
+      - 5000:5000
     environment:
+      - TZ=America/Chicago
       - OPENAI_API_KEY=
       - OPENAI_CHAT_API_URL=https://api.openai.com/v1/chat/completions
       - OPENAI_TTS_API_URL=https://api.openai.com/v1/audio/speech
