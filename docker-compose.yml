@@ -53,7 +53,6 @@ services:
     environment:
       - TZ=America/Chicago
       - OPENAI_API_KEY=
-      - OPENAI_CHAT_API_URL=https://api.openai.com/v1/chat/completions
       - OPENAI_TTS_API_URL=https://api.openai.com/v1/audio/speech
       - OPENAI_VOICE=nova
       - ICECAST_HOST=icecast

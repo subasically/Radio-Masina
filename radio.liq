@@ -101,7 +101,7 @@ songs = rotate(weights=[1, 1], [songs, jingles])
 songs = mksafe(songs)
 
 # Apply crossfading to the jingle sequence
-songs = crossfade(fade_out=3., fade_in=3., duration=5., songs)
+songs = crossfade(fade_out=2., fade_in=2., duration=4., songs)
 
 # Apply fallback with security track and silence fallback to ensure it's non-fallible
 main_stream_fallback = fallback(track_sensitive=false, [immediateRequests, songs, security, silence])
