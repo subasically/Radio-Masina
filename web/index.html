@@ -120,9 +120,9 @@
     <div>
       <label for="codec-select">Select Codec:</label>
       <select id="codec-select">
-        <option value="radio.aac">AAC</option>
-        <option value="radio.mp3">MP3</option>
-        <option value="radio.ogg">OGG</option>
+        <option value="aac">AAC</option>
+        <option value="mp3">MP3</option>
+        <option value="ogg">OGG</option>
       </select>
     </div>
     <audio id="audio-player" controls>
@@ -147,12 +147,13 @@
 
     codecSelect.addEventListener('change', (event) => {
       const selectedCodec = event.target.value;
-      audioSource.src = `/${selectedCodec}`;
+      audioSource.src = `/radio.${selectedCodec}`;
       audioPlayer.load();
+      getMetaData();
     });
 
-    function getMetaData(codec = 'aac') {
-      fetch(`/now_playing?codec=${codec}`)
+    function getMetaData() {
+      fetch('/now_playing')
         .then(response => response.json())
         .then(data => {
           nowPlayingTitle.textContent = data.title;

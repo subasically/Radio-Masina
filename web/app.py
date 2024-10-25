@@ -25,18 +25,20 @@ def queue_next():
 
 @app.route('/now_playing', methods=['GET'], endpoint='now_playing')
 def now_playing():
-    codec = request.args.get('codec', 'aac')  # Default to 'ogg' if no codec is provided
-    mountpoint = f'/radio.{codec}'
     try:
         response = requests.get('http://10.10.10.5:8005/status-json.xsl')
         data = response.json()
+        total_listeners = 0
+        current_title = "Unknown"
+        current_artist = "Unknown"
+        
         for source in data['icestats']['source']:
-            if source['listenurl'].endswith(mountpoint):
-                title = source.get('title', 'Unknown')
-                artist = source.get('artist', 'Unknown')
-                listeners = source.get('listeners', 0)
-                return jsonify({"title": title, "artist": artist, "listeners": listeners})
-        return jsonify({"title": "Unknown", "artist": "Unknown", "listeners": 0})
+            total_listeners += source.get('listeners', 0)
+            if source.get('title') and source.get('artist'):
+                current_title = source.get('title', 'Unknown')
+                current_artist = source.get('artist', 'Unknown')
+        
+        return jsonify({"title": current_title, "artist": current_artist, "listeners": total_listeners})
     except requests.exceptions.RequestException as e:
         return jsonify({"error": str(e)}), 500
 
