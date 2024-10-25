@@ -69,6 +69,6 @@ jobs:
           echo "Build failed. Check the logs."
 
       - name: Trigger Portainer Webhook
+        if: success()
         run: |
           curl -X POST https://docker.subasically.me/api/stacks/webhooks/96867fbb-f657-4f45-8da7-53298f3657b6
-        if: success()  # Only trigger if the previous steps were successful
