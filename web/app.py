@@ -26,7 +26,7 @@ def queue_next():
 @app.route('/now_playing', methods=['GET'], endpoint='now_playing')
 def now_playing():
     try:
-        response = requests.get('http://icecast:8000/status-json.xsl')
+        response = requests.get('http://10.10.10.5:8005/status-json.xsl')
         data = response.json()
         # Extract metadata for the specific mountpoint
         mountpoint = '/radio.ogg'
