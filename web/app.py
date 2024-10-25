@@ -25,18 +25,18 @@ def queue_next():
 
 @app.route('/now_playing', methods=['GET'], endpoint='now_playing')
 def now_playing():
+    codec = request.args.get('codec', 'aac')  # Default to 'ogg' if no codec is provided
+    mountpoint = f'/radio.{codec}'
     try:
         response = requests.get('http://10.10.10.5:8005/status-json.xsl')
         data = response.json()
-        # Extract metadata for the specific mountpoint
-        mountpoint = '/radio.ogg'
         for source in data['icestats']['source']:
             if source['listenurl'].endswith(mountpoint):
                 title = source.get('title', 'Unknown')
                 artist = source.get('artist', 'Unknown')
                 listeners = source.get('listeners', 0)
                 return jsonify({"title": title, "artist": artist, "listeners": listeners})
-        return jsonify([{"title": "Unknown"}, {"artist": "Unknown"}])
+        return jsonify({"title": "Unknown", "artist": "Unknown", "listeners": 0})
     except requests.exceptions.RequestException as e:
         return jsonify({"error": str(e)}), 500
 
