@@ -70,6 +70,5 @@ jobs:
 
       - name: Trigger Portainer Webhook
         run: |
-          response=$(curl -X POST https://docker.subasically.me/api/stacks/webhooks/96867fbb-f657-4f45-8da7-53298f3657b6)
-          echo "Response: $response"
+          curl -X POST https://docker.subasically.me/api/stacks/webhooks/96867fbb-f657-4f45-8da7-53298f3657b6
         if: success()  # Only trigger if the previous steps were successful
