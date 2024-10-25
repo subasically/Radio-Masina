@@ -117,8 +117,16 @@
       <p id="now-playing-title">Loading...</p>
       <p id="now-playing-artist"></p>
     </div>
+    <div>
+      <label for="codec-select">Select Codec:</label>
+      <select id="codec-select">
+        <option value="radio.mp3">MP3</option>
+        <option value="radio.aac">AAC</option>
+        <option value="radio.ogg">OGG</option>
+      </select>
+    </div>
     <audio id="audio-player" controls>
-      <source src="/stream/radio.ogg" type="audio/mpeg">
+      <source id="audio-source" src="/stream/radio.ogg" type="audio/mpeg">
       Your browser does not support the audio element.
     </audio>
     <p>Listeners: <span id="listeners">0</span></p>
@@ -133,6 +141,15 @@
     const nowPlayingTitle = document.getElementById('now-playing-title');
     const nowPlayingArtist = document.getElementById('now-playing-artist');
     const listeners = document.getElementById('listeners');
+    const audioPlayer = document.getElementById('audio-player');
+    const audioSource = document.getElementById('audio-source');
+    const codecSelect = document.getElementById('codec-select');
+
+    codecSelect.addEventListener('change', (event) => {
+      const selectedCodec = event.target.value;
+      audioSource.src = `/${selectedCodec}`;
+      audioPlayer.load();
+    });
 
     function getMetaData() {
       fetch('/now_playing')
