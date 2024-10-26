@@ -43,7 +43,7 @@ def queue_next():
 @app.route('/current_song', methods=['GET'], endpoint='current_song')
 def current_song():
     try:
-        response = requests.get(f'http://{ICECAST_HOST}:{ICECAST_PORT}/status-json.xsl')
+        response = requests.get(f'https://{ICECAST_HOST}:{ICECAST_PORT}/status-json.xsl')
         data = response.json()
         total_listeners = 0
         current_title = "Unknown"
