@@ -152,7 +152,7 @@
 
       socket.on('now_playing', function (data) {
         // Update the UI or perform any actions based on the data received
-        // Delay the update by 5000ms to allow the audio player to load the new source
+        // Delay the update by 13000ms to allow the audio player to load the new source
         setTimeout(() => {
           updateMetaData(data);
           console.log('Current Song: ' + data.title + ' by ' + data.artist);

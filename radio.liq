@@ -4,6 +4,7 @@
 icecast_password = environment.get("ICECAST_PASSWORD")
 icecast_host = environment.get("ICECAST_HOST")
 icecast_mount = environment.get("ICECAST_MOUNT")
+web_app_host = environment.get("WEB_APP_HOST")
 
 # Hardcoded integer values for ports
 icecast_port = 8000
@@ -37,7 +38,7 @@ def apply_metadata(m) =
   title = m["title"]
   artist = m["artist"]
   print("Now playing: #{title} by #{artist}")
-  url = "http://radio_masina:5000/now_playing"
+  url = "http://#{web_app_host}:5000/now_playing"
   result = http.post(url, headers=[("Content-Type", "application/x-www-form-urlencoded")], data="title=#{title}&artist=#{artist}")
   print("HTTP request result: #{result}")
 end
@@ -51,7 +52,7 @@ def on_track_ending(source, metadata) =
   title = metadata["title"]
   artist = metadata["artist"]
   print("Track ending: #{title} by #{artist}")
-  url = "http://radio_masina:5000/queue_next"
+  url = "http://#{web_app_host}:5000/queue_next"
   result = http.post(url, headers=[("Content-Type", "application/x-www-form-urlencoded")], data="title=#{title}&artist=#{artist}")
   print("HTTP request result: #{result}")
 end

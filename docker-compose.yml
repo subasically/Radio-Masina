@@ -55,7 +55,8 @@ services:
       - OPENAI_API_KEY=
       - OPENAI_TTS_API_URL=https://api.openai.com/v1/audio/speech
       - OPENAI_VOICE=nova
-      - HOST_IP=10.10.10.5
+      - WEB_APP_HOST=10.10.10.5
+      - WEB_APP_PORT=5005
       - ICECAST_HOST=icecast
       - ICECAST_PORT=8000
       - ICECAST_USER=admin
