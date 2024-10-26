@@ -37,6 +37,9 @@ def apply_metadata(m) =
   title = m["title"]
   artist = m["artist"]
   print("Now playing: #{title} by #{artist}")
+  url = "http://radio_masina:5000/now_playing"
+  result = http.post(url, headers=[("Content-Type", "application/x-www-form-urlencoded")], data="title=#{title}&artist=#{artist}")
+  print("HTTP request result: #{result}")
 end
 
 # Function to handle track ending event
@@ -64,9 +67,9 @@ def playRequest(req, res) =
   print("Play Request: #{fname}")
 
   if file.exists(fname) then
-    songRequests.push(request_jingle)  # Play the jingle before the requested song
+    # songRequests.push(request_jingle)  # Play the jingle before the requested song
     songRequests.push.uri("annotate:title=#{string.quote(title)}:#{fname}")
-    print("User request pushed into the request queue")
+    print("#{fname} pushed into the request queue")
     res.data("Request Pushed Successfully! :#{fname}")
   else
     res.data("Invalid file.")
@@ -110,7 +113,7 @@ main_stream_fallback = fallback(track_sensitive=false, [immediateRequests, songs
 main_stream = source.on_metadata(main_stream_fallback, apply_metadata)
 
 # Register the track ending event
-# main_stream = source.on_end(main_stream, on_track_ending)
+main_stream = source.on_end(main_stream, on_track_ending)
 
 # 7. Outputs
 

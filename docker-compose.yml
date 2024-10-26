@@ -39,9 +39,9 @@ services:
     networks:
       - basic-network
 
-  radio_masina:
+  radio_masina_web:
     build: .
-    container_name: radio_masina_app
+    container_name: radio_masina_web
     restart: on-failure
     volumes:
       - ./music:/music
@@ -55,6 +55,7 @@ services:
       - OPENAI_API_KEY=
       - OPENAI_TTS_API_URL=https://api.openai.com/v1/audio/speech
       - OPENAI_VOICE=nova
+      - HOST_IP=10.10.10.5
       - ICECAST_HOST=icecast
       - ICECAST_PORT=8000
       - ICECAST_USER=admin

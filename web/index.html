@@ -108,19 +108,11 @@
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
   <script>
-      document.addEventListener("DOMContentLoaded", function() {
-          var socket = io.connect('http://' + document.domain + ':' + location.port);
-
-          socket.on('connect', function() {
-              console.log('WebSocket connected');
-          });
-
-          socket.on('queue_next', function(data) {
-              console.log('Queue next triggered:', data);
-              // Update the UI or perform any actions based on the data received
-              console.log('Next song queued: ' + data.title + ' by ' + data.artist);
-          });
-      });
+    // Use the passed environment variables
+    var icecastHost = "{{ icecast_host }}";
+    var icecastPort = "{{ icecast_port }}";
+    console.log('Icecast Host:', icecastHost);
+    console.log('Icecast Port:', icecastPort);
   </script>
 </head>
 
@@ -151,6 +143,24 @@
     <p>&copy; <span id="year"></span> Radio Mašina. All rights reserved. Version 0.2.3</p>
   </footer>
   <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+      socket.on('connect', function () {
+        console.log('WebSocket connected');
+      });
+
+      socket.on('now_playing', function (data) {
+        // Update the UI or perform any actions based on the data received
+        // Delay the update by 5000ms to allow the audio player to load the new source
+        setTimeout(() => {
+          updateMetaData(data);
+          console.log('Current Song: ' + data.title + ' by ' + data.artist);
+        }, 13000);
+      });
+
+    });
+
     const year = new Date().getFullYear();
     document.getElementById('year').textContent = year;
 
@@ -175,15 +185,24 @@
     });
 
     function getMetaData() {
-      fetch('/now_playing')
+      fetch('/current_song')
         .then(response => response.json())
         .then(data => {
           nowPlayingTitle.textContent = data.title;
           nowPlayingArtist.textContent = data.artist;
           listeners.textContent = data.listeners;
           setMediaSession(data);
+          console.log("Initial fetch:", data);
         })
         .catch(error => console.error(error));
+    }
+
+    function updateMetaData(data) {
+      nowPlayingTitle.textContent = data.title;
+      nowPlayingArtist.textContent = data.artist;
+      listeners.textContent = data.listeners;
+      setMediaSession(data);
+
     }
 
     // Set browser navigator media session metadata
@@ -201,10 +220,6 @@
     }
 
     getMetaData();
-
-    setInterval(() => {
-      getMetaData();
-    }, 5000);
   </script>
 </body>
 
