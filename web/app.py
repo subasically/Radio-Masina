@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify, send_from_directory, render_template
+from flask_socketio import SocketIO, emit
 import subprocess
 import requests
 
 app = Flask(__name__, static_folder='./', template_folder='./')
+socketio = SocketIO(app)
 
 @app.route('/', endpoint='index')
 def index():
@@ -19,6 +21,7 @@ def queue_next():
     result = subprocess.run(["python3", "queue_next.py", title, artist], capture_output=True, text=True)
     print(f"queue_next.py output: {result.stdout}", "app")
     if result.returncode == 0:
+        socketio.emit('queue_next', {'title': title, 'artist': artist})
         return "Success", 200
     else:
         return f"Error: {result.stderr}", 500
@@ -43,4 +46,4 @@ def now_playing():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
