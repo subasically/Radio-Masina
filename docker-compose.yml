@@ -18,7 +18,7 @@ services:
     image: savonet/liquidsoap:v2.2.5 #savonet/liquidsoap:rolling-release-v2.3.x 
     container_name: radio_masina_liquidsoap
     restart: on-failure
-    command: ["/radio.liq"]
+    command: ["/radio_basic_no_ai.liq"]
     user: "1000:1000"
     ports:
       - 7001:7001
@@ -33,47 +33,47 @@ services:
       - icecast
     volumes:
       - ./music:/music
-      - ./radio.liq:/radio.liq
+      - ./radio_basic_no_ai.liq:/radio_basic_no_ai.liq
       - ./jingles:/jingles
       - ./intros:/intros
     networks:
       - basic-network
 
-  radio_masina_web:
-    build: .
-    container_name: radio_masina_web
-    restart: on-failure
-    volumes:
-      - ./music:/music
-      - ./jingles:/jingles
-      - ./intros:/intros
-      - ./web:/app/web
-    ports:
-      - 5000:5000
-    environment:
-      - TZ=America/Chicago
-      - OPENAI_API_KEY=
-      - OPENAI_TTS_API_URL=https://api.openai.com/v1/audio/speech
-      - OPENAI_VOICE=nova
-      - WEB_APP_HOST=10.10.10.5
-      - WEB_APP_PORT=5005
-      - ICECAST_HOST=icecast
-      - ICECAST_PORT=8000
-      - ICECAST_USER=admin
-      - ICECAST_PASSWORD=hackme
-      - ICECAST_MOUNT=radio
-      - LIQUIDSOAP_HOST=liquidsoap
-      - LIQUIDSOAP_PORT=7001
-      - RADIO_NAME=Basic Radio
-      - DJ_NAME=DJ Mašina
-      - MUSIC_DIR=/music
-      - JINGLES_DIR=/jingles
-      - INTROS_DIR=/intros
-      - DJ_DEMEANOR=Fun and Energetic
-      - DJ_GENDER=Female
-      - DJ_LANGUAGE=Bosnian
-    networks:
-      - basic-network
+  # radio_masina_web:
+  #   build: .
+  #   container_name: radio_masina_web
+  #   restart: on-failure
+  #   volumes:
+  #     - ./music:/music
+  #     - ./jingles:/jingles
+  #     - ./intros:/intros
+  #     - ./web:/app/web
+  #   ports:
+  #     - 5000:5000
+  #   environment:
+  #     - TZ=America/Chicago
+  #     - OPENAI_API_KEY=
+  #     - OPENAI_TTS_API_URL=https://api.openai.com/v1/audio/speech
+  #     - OPENAI_VOICE=nova
+  #     - WEB_APP_HOST=10.10.10.5
+  #     - WEB_APP_PORT=5005
+  #     - ICECAST_HOST=icecast
+  #     - ICECAST_PORT=8000
+  #     - ICECAST_USER=admin
+  #     - ICECAST_PASSWORD=hackme
+  #     - ICECAST_MOUNT=radio
+  #     - LIQUIDSOAP_HOST=liquidsoap
+  #     - LIQUIDSOAP_PORT=7001
+  #     - RADIO_NAME=Basic Radio
+  #     - DJ_NAME=DJ Mašina
+  #     - MUSIC_DIR=/music
+  #     - JINGLES_DIR=/jingles
+  #     - INTROS_DIR=/intros
+  #     - DJ_DEMEANOR=Fun and Energetic
+  #     - DJ_GENDER=Female
+  #     - DJ_LANGUAGE=Bosnian
+  #   networks:
+  #     - basic-network
 
   # file_watcher:
   #   build:
